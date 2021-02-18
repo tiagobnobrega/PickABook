@@ -46,6 +46,10 @@ module.exports = {
     "react/destructuring-assignment": "off",
     // No jsx extension: https://github.com/facebook/create-react-app/issues/87#issuecomment-234627904
     "react/jsx-filename-extension": "off",
+    // allow props spreading
+    "react/jsx-props-no-spreading": "off",
+    //disable prop types validation
+    "react/prop-types": "off",
     // note you must disable the base rule as it can report incorrect errors
     "no-use-before-define": "off",
     // Use function hoisting to improve code readability
