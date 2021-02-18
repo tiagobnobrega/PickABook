@@ -1,10 +1,9 @@
-import {ThemeProvider, useTheme} from '@shopify/restyle';
 import React from 'react';
-import {SafeAreaView, ScrollView, StatusBar, StyleSheet, View,} from 'react-native';
+import {SafeAreaView, StatusBar, StyleSheet,} from 'react-native';
 
-import {Colors, Header,} from 'react-native/Libraries/NewAppScreen';
-import SolidButton from "./src/components/SolidButton";
-import {defaultTheme, Theme} from './src/theme';
+import {Colors,} from 'react-native/Libraries/NewAppScreen';
+import PickABook from './src/core/PickABook';
+import {createTheme, defaultDesignTokens, defaultTheme} from './src/theme';
 
 const styles = StyleSheet.create({
   scrollView: {
@@ -12,30 +11,17 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppContent: React.FC = ()=> {
-  const theme = useTheme<Theme>();
+const App: React.FC = () => {
+  const otherTheme = createTheme({...defaultDesignTokens, colors:{...defaultDesignTokens.colors, primary: '#f0f'}});
   return (
-      <>
-        <StatusBar barStyle="dark-content"/>
-        <SafeAreaView>
-          <ScrollView
-              contentInsetAdjustmentBehavior="automatic"
-              style={styles.scrollView}>
-            <Header/>
-            <View>
-              <SolidButton color="buttonPrimaryColor" onColor="onPrimary" label="Teste"/>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
-      </>
-  )
-}
-
-const App: React.FC = () => (
-    <ThemeProvider theme={defaultTheme}>
-      <AppContent />
-    </ThemeProvider>
-);
+    <>
+      <StatusBar barStyle="dark-content"/>
+      <SafeAreaView>
+        <PickABook config={{apiKey:'dOg5NBbZLtDlnEZ25bI93hqcMG99wi1q'}} theme={defaultTheme} style={styles.scrollView}/>
+        <PickABook config={{apiKey:'dOg5NBbZLtDlnEZ25bI93hqcMG99wi1q'}} theme={otherTheme} style={styles.scrollView}/>
+      </SafeAreaView>
+    </>
+)};
 
 
 export default App;

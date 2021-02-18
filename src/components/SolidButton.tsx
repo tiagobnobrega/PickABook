@@ -16,8 +16,8 @@ const SolidButton: React.FC<SolidButtonProps> = ({label, color, onColor, icon, .
   const wrapperProps = useRestyle([spacingShorthand, layout], rest)
   const theme = useTheme<Theme>();
   return (<TouchableBox {...wrapperProps}>
-    <Box flex={1} bg={color} {...theme.button as Partial<Theme>}>
-      {label && <Box flex={1}><Text>{label}</Text></Box>}
+    <Box flex={1} bg={color} flexDirection="row" justifyContent="center" alignItems="center" {...theme.button as Partial<Theme>}>
+      {label && <Box flex={1}><Text textAlign="center">{label}</Text></Box>}
       {icon && <Box>{icon}</Box>}
     </Box>
   </TouchableBox>)

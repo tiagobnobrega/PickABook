@@ -7,15 +7,15 @@ module.exports = {
     "unicorn",
   ],
   extends: [
-    "airbnb-typescript",
     "plugin:@typescript-eslint/recommended",
     "plugin:eslint-comments/recommended",
     "plugin:jest/recommended",
     "plugin:promise/recommended",
     "plugin:unicorn/recommended",
+    "airbnb-typescript",
     "prettier",
-    "prettier/react",
     "prettier/@typescript-eslint",
+
   ],
   parserOptions: {
     ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features

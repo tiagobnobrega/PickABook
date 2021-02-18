@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
-import {BorderProps, ColorProps, createTheme, LayoutProps} from '@shopify/restyle'
+import {BorderProps, ColorProps, createTheme as createRestyleTheme, LayoutProps} from '@shopify/restyle'
 
-const defaultDesignTokens = {
+export const defaultDesignTokens = {
   colors:{
     primary: '#30415d',
     onPrimary: '#fff',
@@ -13,10 +13,12 @@ const defaultDesignTokens = {
     onBgDisabled: '#535353',
   },
   spacing: {
+    none: 0,
+    xs: 4,
     s: 8,
     m: 16,
-    l: 24,
-    xl: 40,
+    l: 32,
+    xl: 64,
   },
   breakpoints: {
     phone: 0,
@@ -24,9 +26,12 @@ const defaultDesignTokens = {
   },
   borderRadii: {
     none: 0,
+    xs: 2,
     s: 4,
     m: 8,
     l: 16,
+    xl: 32,
+    xxl: 64,
     round: 9999,
   },
   fontFamily: Platform.select({
@@ -43,24 +48,27 @@ const defaultDesignTokens = {
 export type DesignTokens = typeof defaultDesignTokens;
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createThemeObjectFromTokens = <D extends DesignTokens>(designTokens: D) =>({
-  ...defaultDesignTokens,
+const createThemeObjectFromTokens = (designTokens: DesignTokens) =>({
+  ...designTokens,
   colors:{
-    ...defaultDesignTokens.colors,
-    buttonPrimaryColor:defaultDesignTokens.colors.primary,
-    buttonPrimaryOnColor:defaultDesignTokens.colors.onPrimary,
-    buttonSecondaryColor:defaultDesignTokens.colors.primary,
+    ...designTokens.colors,
+    buttonPrimaryColor:designTokens.colors.primary,
+    buttonPrimaryOnColor:designTokens.colors.onPrimary,
+    buttonSecondaryColor:designTokens.colors.primary,
+    cardBg:designTokens.colors.bgSecondary,
+    cardOnBg: designTokens.colors.onBgSecondary,
+    stepsActiveBg: designTokens.colors.primary,
+    stepsActiveOnBg: designTokens.colors.onPrimary,
+    stepsInactiveBg: designTokens.colors.bgDisabled,
+    stepsInactiveOnBg: designTokens.colors.onBgDisabled,
   },
   button:{
-    borderRadius: 's',
+    borderRadius: 'm',
     borderWidth: 1,
     padding: 's'
   },
   card:{
-    bg: 'bgSecondary',
-    onBg: 'onBgSecondary',
-    borderRadius: designTokens.borderRadii.m,
-    padding: designTokens.spacing.m,
+    padding: 'm',
   },
   textVariants:{
     heading: {
@@ -70,15 +78,16 @@ const createThemeObjectFromTokens = <D extends DesignTokens>(designTokens: D) =>
     },
   },
   steps: {
-    activeColor: designTokens.colors.primary,
-    onActiveColor: designTokens.colors.onPrimary,
-    inactiveColor: designTokens.colors.bgDisabled,
-    onInactiveColor: designTokens.colors.onBgDisabled,
-    borderRadius: designTokens.borderRadii.round,
+    borderRadius: 'round',
   }
 })
 
-const defaultThemeObject = createThemeObjectFromTokens<DesignTokens>(defaultDesignTokens);
+const defaultThemeObject = createThemeObjectFromTokens(defaultDesignTokens);
 
-export const defaultTheme = createTheme(defaultThemeObject);
+export const defaultTheme = createRestyleTheme(defaultThemeObject);
 export type Theme = typeof defaultTheme;
+
+export const createTheme = (designTokens: Partial<DesignTokens>):Theme => {
+  const themeObject = createThemeObjectFromTokens({...defaultDesignTokens, ...designTokens});
+  return createRestyleTheme(themeObject);
+}
