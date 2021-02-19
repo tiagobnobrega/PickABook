@@ -15,12 +15,14 @@ interface SolidButtonProps extends SpacingShorthandProps<Theme>, LayoutProps<The
 const SolidButton: React.FC<SolidButtonProps> = ({label, color, onColor, icon, ...rest})=>{
   const wrapperProps = useRestyle([spacingShorthand, layout], rest)
   const theme = useTheme<Theme>();
-  return (<TouchableBox {...wrapperProps}>
-    <Box flex={1} bg={color} flexDirection="row" justifyContent="center" alignItems="center" {...theme.button as Partial<Theme>}>
-      {label && <Box flex={1}><Text textAlign="center">{label}</Text></Box>}
-      {icon && <Box>{icon}</Box>}
-    </Box>
-  </TouchableBox>)
+  return (
+    <TouchableBox {...wrapperProps}>
+      <Box flex={1} bg={color} flexDirection="row" justifyContent="center" alignItems="center" style={theme.button}>
+        {label && <Box flex={1}><Text textAlign="center">{label}</Text></Box>}
+        {icon && <Box>{icon}</Box>}
+      </Box>
+    </TouchableBox>
+)
 }
 
 export default SolidButton;

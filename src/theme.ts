@@ -1,5 +1,5 @@
-import { Platform } from 'react-native';
-import {BorderProps, ColorProps, createTheme as createRestyleTheme, LayoutProps} from '@shopify/restyle'
+import {Platform} from 'react-native';
+import {createTheme as createRestyleTheme} from '@shopify/restyle'
 
 export const defaultDesignTokens = {
   colors:{
@@ -63,12 +63,21 @@ const createThemeObjectFromTokens = (designTokens: DesignTokens) =>({
     stepsInactiveOnBg: designTokens.colors.onBgDisabled,
   },
   button:{
-    borderRadius: 'm',
+    borderRadius: designTokens.borderRadii.m,
     borderWidth: 1,
-    padding: 's'
+    padding: designTokens.spacing.m,
   },
   card:{
-    padding: 'm',
+    padding: designTokens.spacing.m,
+    borderRadius: designTokens.borderRadii.m,
+    borderColor: designTokens.colors.bgSecondary,
+    backgroundColor: designTokens.colors.bgSecondary,
+    onBackgroundColor: designTokens.colors.onBgSecondary,
+    active:{
+      backgroundColor:designTokens.colors.primary,
+      onBackgroundColor: designTokens.colors.onPrimary,
+      borderColor:designTokens.colors.onPrimary
+    }
   },
   textVariants:{
     heading: {
