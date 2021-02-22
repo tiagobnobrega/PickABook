@@ -1,8 +1,8 @@
-import {Platform} from 'react-native';
-import {createTheme as createRestyleTheme} from '@shopify/restyle'
+import { Platform } from 'react-native';
+import { createTheme as createRestyleTheme } from '@shopify/restyle';
 
 export const defaultDesignTokens = {
-  colors:{
+  colors: {
     primary: '#30415d',
     onPrimary: '#fff',
     bg: '#ffffff',
@@ -36,60 +36,82 @@ export const defaultDesignTokens = {
   },
   fontFamily: Platform.select({
     ios: 'Arial',
-    android: 'Roboto'
+    android: 'Roboto',
   }),
   fontSizes: {
     s: 12,
     m: 16,
     l: 18,
-    xl: 22
-  }
+    xl: 22,
+  },
 };
 export type DesignTokens = typeof defaultDesignTokens;
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const createThemeObjectFromTokens = (designTokens: DesignTokens) =>({
+const createThemeObjectFromTokens = (designTokens: DesignTokens) => ({
   ...designTokens,
-  colors:{
+  colors: {
     ...designTokens.colors,
-    buttonPrimaryColor:designTokens.colors.primary,
-    buttonPrimaryOnColor:designTokens.colors.onPrimary,
-    buttonSecondaryColor:designTokens.colors.primary,
-    cardBg:designTokens.colors.bgSecondary,
+    buttonPrimaryColor: designTokens.colors.primary,
+    buttonPrimaryOnColor: designTokens.colors.onPrimary,
+    buttonSecondaryColor: designTokens.colors.primary,
+    cardBg: designTokens.colors.bgSecondary,
     cardOnBg: designTokens.colors.onBgSecondary,
     stepsActiveBg: designTokens.colors.primary,
     stepsActiveOnBg: designTokens.colors.onPrimary,
     stepsInactiveBg: designTokens.colors.bgDisabled,
     stepsInactiveOnBg: designTokens.colors.onBgDisabled,
   },
-  button:{
+  button: {
     borderRadius: designTokens.borderRadii.m,
     borderWidth: 1,
     padding: designTokens.spacing.m,
   },
-  card:{
+  card: {
     padding: designTokens.spacing.m,
     borderRadius: designTokens.borderRadii.m,
     borderColor: designTokens.colors.bgSecondary,
     backgroundColor: designTokens.colors.bgSecondary,
     onBackgroundColor: designTokens.colors.onBgSecondary,
-    active:{
-      backgroundColor:designTokens.colors.primary,
+    active: {
+      backgroundColor: designTokens.colors.primary,
       onBackgroundColor: designTokens.colors.onPrimary,
-      borderColor:designTokens.colors.onPrimary
-    }
+      borderColor: designTokens.colors.onPrimary,
+    },
   },
-  textVariants:{
+  textVariants: {
     heading: {
       fontFamily: designTokens.fontFamily,
-      color: designTokens.colors.primary,
+      color: 'primary',
       fontSize: designTokens.fontSizes.xl,
     },
   },
   steps: {
-    borderRadius: 'round',
-  }
-})
+    borderRadius: designTokens.borderRadii.round,
+    backgroundColor: designTokens.colors.bgSecondary,
+    onBackgroundColor: designTokens.colors.onBgSecondary,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: designTokens.spacing.m,
+    active: {
+      backgroundColor: designTokens.colors.primary,
+      onBackgroundColor: designTokens.colors.onPrimary,
+    },
+    progress: {
+      paddingHorizontal: designTokens.spacing.m + 5,
+      height: '100%',
+      justifyContent: 'center',
+      backgroundColor: designTokens.colors.bgSecondary,
+      bar: {
+        backgroundColor: designTokens.colors.primary,
+        height: 10,
+        borderRadius: designTokens.borderRadii.round,
+      },
+    },
+  },
+});
 
 const defaultThemeObject = createThemeObjectFromTokens(defaultDesignTokens);
 
@@ -97,6 +119,6 @@ export const defaultTheme = createRestyleTheme(defaultThemeObject);
 export type Theme = typeof defaultTheme;
 
 export const createTheme = (designTokens: Partial<DesignTokens>):Theme => {
-  const themeObject = createThemeObjectFromTokens({...defaultDesignTokens, ...designTokens});
+  const themeObject = createThemeObjectFromTokens({ ...defaultDesignTokens, ...designTokens });
   return createRestyleTheme(themeObject);
-}
+};

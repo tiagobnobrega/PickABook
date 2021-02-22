@@ -12,10 +12,9 @@ module.exports = {
     "plugin:jest/recommended",
     "plugin:promise/recommended",
     "plugin:unicorn/recommended",
-    "airbnb-typescript",
     "prettier",
     "prettier/@typescript-eslint",
-
+    "airbnb-typescript",
   ],
   parserOptions: {
     ecmaVersion: 2020, // Allows for the parsing of modern ECMAScript features
@@ -27,6 +26,7 @@ module.exports = {
     jest: true,
   },
   rules: {
+    "max-len": ["error", { "code": 150 }],
     "unicorn/filename-case": [
       "error",
       {
