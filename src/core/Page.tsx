@@ -1,8 +1,7 @@
 import React from 'react';
 import { BoxProps } from '@shopify/restyle';
 import Box from '../components/Box';
-import { PageSliderPageMakerProps } from '../components/PageSlider';
-import Text from '../components/Text';
+import { PageSliderPageMakerProps } from '../components/PageSliderVertical';
 import { Theme } from '../theme';
 import SolidButton from '../components/SolidButton';
 
@@ -10,8 +9,8 @@ type PageProps = Pick<PageSliderPageMakerProps, 'prev'|'next'> & BoxProps<Theme>
 const Page: React.FC<PageProps> = ({
   children, prev, next, ...rest
 }) => (
-  <Box flex={1} {...rest}>
-    <Box flex={1} width="100%" style={{backgroundColor: '#f0f'}}>
+  <Box {...rest}>
+    <Box flex={1} width="100%" style={{ backgroundColor: '#f0f' }}>
       {children}
     </Box>
     <Box flexDirection="row">

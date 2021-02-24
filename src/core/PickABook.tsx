@@ -1,7 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { ThemeProvider } from '@shopify/restyle';
 import {
-  Animated, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle,
+  Animated, SafeAreaView, ScrollView, StyleProp, useWindowDimensions, View, ViewStyle,
 } from 'react-native';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import pickABookConfig, { PickABookConfig } from '../config/config';
@@ -10,7 +10,8 @@ import { Theme } from '../theme';
 import SolidButton from '../components/SolidButton';
 import Text from '../components/Text';
 import { BooksListName } from '../hooks/useApi';
-import PageSlider, { PageSliderPageMaker, PageSliderPageMakerProps } from '../components/PageSlider';
+import PageSliderVertical, { PageSliderPageMaker, PageSliderPageMakerProps } from '../components/PageSliderVertical';
+// import PageSliderHorizontal, { PageSliderPageMaker, PageSliderPageMakerProps } from '../components/PageSliderHorizontal';
 import Box from '../components/Box';
 import Steps from '../components/Steps';
 import Page from './Page';
@@ -35,21 +36,28 @@ export interface PickABookProps {
   config: Partial<PickABookConfig>;
   theme: Theme;
   style?: StyleProp<ViewStyle>
+  width?: number;
+  height?: number;
 }
-const PickABook : React.FC<PickABookProps> = ({ config, theme, style }) => {
+const PickABook : React.FC<PickABookProps> = ({
+  config, theme, style, width, height,
+}) => {
   const handleChange = React.useCallback((item:BooksListName) => {
-    console.log('Selected Item:', { item });
+    // console.log('Selected Item:', { item });
   }, []);
-  const { width, height } = useWindowDimensions();
-  const pages = [(props:PageSliderPageMakerProps) => (
-    // <Page {...props} width={width}>
-    //   <Text variant="heading">Lorem Ipsum ?</Text>
+  const [componentDim, setComponentDim] = useState({ height: height || 1, width: width || 1 });
+  const [stepsDim, setStepsDim] = useState({ height: height || 1, width: width || 1 });
+  console.log({ componentDim });
+  const itemSize = Math.max(componentDim.height - stepsDim.height, 0);
+  const pages = [1, 2, 3].map(() => (props:PageSliderPageMakerProps) => (
+    <Page {...props} width={width} height={itemSize}>
+      <Text variant="heading">Lorem Ipsum ?</Text>
       <Box width={width}>
-        <ChooseList onChange={handleChange} style={{ backgroundColor: '#00f' }} nestedScrollEnabled />
-       </Box>
-    // </Page>
-  ), pageMakerSample, pageMakerSample];
-  const scrollXRef = useRef(new Animated.Value(0));
+        <ChooseList onChange={handleChange} nestedScrollEnabled />
+      </Box>
+    </Page>
+  ));
+  const scrollRef = useRef(new Animated.Value(0));
   // useEffect(()=>{
   //   const listId = scrollXRef.current.addListener(({value})=>console.log(`Steps::progressAnimatedValue=${value}`))
   //   return ()=>{
@@ -60,18 +68,38 @@ const PickABook : React.FC<PickABookProps> = ({ config, theme, style }) => {
     <ThemeProvider theme={theme}>
       <ConfigContext.Provider value={{ ...pickABookConfig, ...config }}>
         <QueryClientProvider client={queryClient}>
-          <ScrollView
-              nestedScrollEnabled
-            contentInsetAdjustmentBehavior="automatic"
-            style={style}
+          {/* <ScrollView */}
+          {/*  nestedScrollEnabled */}
+          {/*  contentInsetAdjustmentBehavior="automatic" */}
+          {/*  style={style} */}
+          {/* > */}
+          <View
+            style={[{ backgroundColor: '#00f' }, style]}
+            onLayout={(evt) => {
+              const { layout } = evt.nativeEvent;
+              setComponentDim({ width: layout.width, height: layout.height });
+            }}
           >
-            <View style={{backgroundColor: "#ccc"}}>
-              <Steps progressAnimatedValueRef={scrollXRef} progressMaximum={pages.length * width} />
-              <PageSlider scrollXRef={scrollXRef} width={width} data={pages} nestedScrollEnabled flex={1} />
-              {/*<ChooseList onChange={handleChange} />*/}
-              {/* <SolidButton color="buttonPrimaryColor" onColor="onPrimary" label="Teste" width={100} ml="m" icon={<Text>{'>'}</Text>} /> */}
-            </View>
-          </ScrollView>
+            <Steps
+              progressAnimatedValueRef={scrollRef}
+              progressMaximum={pages.length * itemSize}
+              onLayout={(evt) => {
+                const { layout } = evt.nativeEvent;
+                setStepsDim({ width: layout.width, height: layout.height });
+              }}
+            />
+            <PageSliderVertical
+              nestedScrollEnabled
+              scrollRef={scrollRef}
+              itemHeight={itemSize}
+              width={width}
+              data={pages}
+              flex={1}
+            />
+            {/* <ChooseList onChange={handleChange} /> */}
+            {/* <SolidButton color="buttonPrimaryColor" onColor="onPrimary" label="Teste" width={100} ml="m" icon={<Text>{'>'}</Text>} /> */}
+          </View>
+          {/* </ScrollView> */}
         </QueryClientProvider>
       </ConfigContext.Provider>
     </ThemeProvider>

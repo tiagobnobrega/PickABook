@@ -9,10 +9,10 @@ import Text from './Text';
 import { Theme } from '../theme';
 import Card from './Card';
 import Box from './Box';
-import AnimatedListBox from './AnimatedListBox';
+import AnimatedListBox, { AnimatedListBoxProps } from './AnimatedListBox';
 import AnimatedBox from './AnimatedBox';
 
-export interface SliderSelectProps extends BoxProps<Theme>{
+export interface SliderSelectProps extends Partial<BoxProps<Theme>>, Omit<AnimatedListBoxProps, 'renderItem'|'keyExtractor'>{
   onChange?:(item:any)=>void;
   isLoading?: boolean;
   data: any;
@@ -25,7 +25,6 @@ const SliderSelect: React.FC<SliderSelectProps> = ({
 }) => {
   const theme = useTheme<Theme>();
   const { width } = useWindowDimensions();
-  const boxProps = useRestyle([all], rest);
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const ITEM_WIDTH = width * 0.5;
   const SPACER_WIDTH = (width - ITEM_WIDTH) / 2;
@@ -41,8 +40,8 @@ const SliderSelect: React.FC<SliderSelectProps> = ({
   if (!data) return <Text>Not found!</Text>;
   return (
     <AnimatedListBox
-      {...boxProps}
-      style={{backgroundColor:'rgba(0,255,255,0.5)'}}
+      {...rest}
+      style={{ backgroundColor: 'rgba(0,255,255,0.5)' }}
       horizontal
       snapToInterval={ITEM_WIDTH}
       decelerationRate={0}
@@ -68,7 +67,14 @@ const SliderSelect: React.FC<SliderSelectProps> = ({
           easing: Easing.cubic,
         });
         return (
-          <AnimatedBox px="s" width={ITEM_WIDTH} minHeight={200} style={{ translateY, paddingTop: 15, paddingBottom: 5, backgroundColor:'rgba(0,255,0,0.5)' }}>
+          <AnimatedBox
+            px="s"
+            width={ITEM_WIDTH}
+            minHeight={200}
+            style={{
+              translateY, paddingTop: 15, paddingBottom: 5, backgroundColor: 'rgba(0,255,0,0.5)',
+            }}
+          >
             <Card title={item.display_name} style={{ backgroundColor, flex: 1 }} icon={renderIcon && renderIcon(item)} />
           </AnimatedBox>
         );

@@ -7,7 +7,7 @@ import SliderSelect, { SliderSelectProps } from '../components/SliderSelect';
 import useConfig from '../hooks/useConfig';
 import useApi, { BooksListName } from '../hooks/useApi';
 
-interface ChooseListProps extends Partial<Omit<SliderSelectProps, 'data'|'isLoading'|'onChange'|'keyExtractor'>>{
+interface ChooseListProps extends Partial<Omit<SliderSelectProps, 'data'|'isLoading'|'onChange'|'keyExtractor'|'renderItem'>>{
   onChange?:(item:BooksListName)=>void;
 }
 
@@ -21,11 +21,11 @@ const ChooseList: React.FC<ChooseListProps> = ({ onChange, ...rest }) => {
   }
   return (
     <SliderSelect
+      {...rest}
       data={data}
       isLoading={isLoading}
       onChange={onChange}
       keyExtractor={(item) => Math.random().toString(36) + item.key || item.list_name_encoded}
-      {...rest}
     />
   );
 };

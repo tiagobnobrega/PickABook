@@ -1,26 +1,27 @@
 import React, { useCallback, useRef } from 'react';
 import {
-  Animated, FlatList, NativeScrollEvent, NativeSyntheticEvent, useWindowDimensions,
+  Animated, NativeScrollEvent, NativeSyntheticEvent, useWindowDimensions,
 } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import ListBox, { ListBoxProps } from './ListBox';
 
 export interface PageSliderPageMakerProps {
   index:number; prev:()=>void; next:()=>void;
 }
 export type PageSliderPageMaker = React.Component<PageSliderPageMakerProps>| React.FC<PageSliderPageMakerProps>;
-export interface PageSliderProps extends Partial<Omit<ListBoxProps, 'renderItem'>>{
+export interface PageSliderHorizontalProps extends Partial<Omit<ListBoxProps, 'renderItem'>>{
   scrollXRef?:React.MutableRefObject<Animated.Value>;
   data: PageSliderPageMaker[];
   itemWidth?:number;
 }
 
-const PageSlider:React.FC<PageSliderProps> = (props) => {
+const PageSliderHorizontal:React.FC<PageSliderHorizontalProps> = (props) => {
   const { width } = useWindowDimensions();
   const defaultScrollXRef = useRef(new Animated.Value(0));
   const {
     scrollXRef = defaultScrollXRef, itemWidth = width, data, ...rest
   } = props;
-  const listRef = useRef<FlatList|null>(null);
+  const listRef = useRef<FlatList<any>|null>(null);
   const scrollX = scrollXRef.current;
 
   const indexRef = useRef(0);
@@ -55,6 +56,7 @@ const PageSlider:React.FC<PageSliderProps> = (props) => {
       snapToInterval={itemWidth}
       decelerationRate={0}
       showsHorizontalScrollIndicator={false}
+      scrollEnabled={false}
       onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })}
       onMomentumScrollEnd={handleMomentumScrollEnd}
       scrollEventThrottle={16}
@@ -65,4 +67,4 @@ const PageSlider:React.FC<PageSliderProps> = (props) => {
   );
 };
 
-export default PageSlider;
+export default PageSliderHorizontal;
