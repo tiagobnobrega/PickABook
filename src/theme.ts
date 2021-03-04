@@ -86,6 +86,16 @@ const createThemeObjectFromTokens = (designTokens: DesignTokens) => ({
       fontSize: designTokens.fontSizes.xl,
     },
   },
+  question: {
+    heading: {
+      padding: designTokens.spacing.xs,
+      textAlign: 'center',
+      marginBottom: designTokens.spacing.m,
+    },
+  },
+  actionBar: {
+    backgroundColor: designTokens.colors.bgSecondary,
+  },
   steps: {
     borderRadius: designTokens.borderRadii.round,
     backgroundColor: designTokens.colors.bgSecondary,

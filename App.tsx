@@ -1,7 +1,9 @@
 import React from 'react';
-import { SafeAreaView, StatusBar, StyleSheet } from 'react-native';
+import { SafeAreaView, StatusBar, LogBox } from 'react-native';
 import PickABook from './src/core/PickABook';
 import { createTheme, defaultDesignTokens, defaultTheme } from './src/theme';
+
+LogBox.ignoreLogs(['Setting a timer']);
 
 const App: React.FC = () => {
   const otherTheme = createTheme({

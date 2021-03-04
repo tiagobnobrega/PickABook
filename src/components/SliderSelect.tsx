@@ -33,6 +33,7 @@ const SliderSelect: React.FC<SliderSelectProps> = ({
       onChange(data[0]);
     }
   }, [data, onChange]);
+
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
@@ -51,9 +52,9 @@ const SliderSelect: React.FC<SliderSelectProps> = ({
         const selectedIndex = Math.round(contentOffset.x / ITEM_WIDTH);
         if (onChange) onChange(data[selectedIndex]);
       }}
-      scrollEventThrottle={16}
+      // scrollEventThrottle={16}
       keyExtractor={keyExtractor}
-      data={[{ key: 'foo-left' }, ...data.slice(0, 3), { key: 'foo-right' }]}
+      data={[{ key: 'foo-left' }, ...(data || []).slice(0, 3), { key: 'foo-right' }]}
       renderItem={({ item, index }) => {
         if (!item.display_name) {
           return <Box width={SPACER_WIDTH} />;
@@ -81,7 +82,6 @@ const SliderSelect: React.FC<SliderSelectProps> = ({
       }}
     />
   );
-  // return (<FlatList data={data as BooksListName[]} renderItem={(it:BooksListName)=><Card m="s" title={it.display_name} icon={<Text>?</Text>} />} />)
 };
 
 export default SliderSelect;

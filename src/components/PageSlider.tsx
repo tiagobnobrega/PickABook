@@ -6,29 +6,37 @@ import { FlatList } from 'react-native-gesture-handler';
 import ListBox, { ListBoxProps } from './ListBox';
 
 export interface PageSliderPageMakerProps {
-  index:number; prev:()=>void; next:()=>void;
+  index:number; prev:()=>void; next:()=>void;scrollRef?:React.MutableRefObject<Animated.Value>;
 }
 export type PageSliderPageMaker = React.Component<PageSliderPageMakerProps>| React.FC<PageSliderPageMakerProps>;
-export interface PageSliderHorizontalProps extends Partial<Omit<ListBoxProps, 'renderItem'>>{
-  scrollXRef?:React.MutableRefObject<Animated.Value>;
+export interface PageSliderProps extends Partial<Omit<ListBoxProps, 'renderItem'>>{
+  scrollRef?:React.MutableRefObject<Animated.Value>;
   data: PageSliderPageMaker[];
-  itemWidth?:number;
+  itemSize?:number;
+  horizontal?: boolean;
+  useNativeDriver?: boolean;
 }
 
-const PageSliderHorizontal:React.FC<PageSliderHorizontalProps> = (props) => {
-  const { width } = useWindowDimensions();
-  const defaultScrollXRef = useRef(new Animated.Value(0));
+const PageSlider:React.FC<PageSliderProps> = (props) => {
+  const { width, height } = useWindowDimensions();
+  const defaultScrollRef = useRef(new Animated.Value(0));
   const {
-    scrollXRef = defaultScrollXRef, itemWidth = width, data, ...rest
+    horizontal,
+    useNativeDriver = false,
+    scrollRef = defaultScrollRef,
+    itemSize = horizontal ? width : height,
+    data,
+    ...rest
   } = props;
+
   const listRef = useRef<FlatList<any>|null>(null);
-  const scrollX = scrollXRef.current;
+  const scrollValue = scrollRef.current;
 
   const indexRef = useRef(0);
   const handleMomentumScrollEnd = useCallback((event:NativeSyntheticEvent<NativeScrollEvent>):void => {
     const { nativeEvent: { contentOffset } } = event;
-    indexRef.current = Math.round(contentOffset.x / itemWidth);
-  }, []);
+    indexRef.current = Math.round(contentOffset[horizontal ? 'x' : 'y'] / itemSize);
+  }, [itemSize, horizontal]);
 
   const next = ():void => {
     if (indexRef.current < data.length - 1) {
@@ -45,26 +53,33 @@ const PageSliderHorizontal:React.FC<PageSliderHorizontalProps> = (props) => {
 
   const renderItem = useCallback(({ item, index }) => {
     const ItemComponent = item;
-    return <ItemComponent {...{ index, prev, next }} />;
+    return (
+      <ItemComponent {...{
+        index, prev, next, scrollRef,
+      }}
+      />
+    );
   }, [prev, next]);
 
   return (
     <ListBox
-      {...rest}
-      ref={listRef}
-      horizontal
-      snapToInterval={itemWidth}
+      scrollEventThrottle={16}
       decelerationRate={0}
       showsHorizontalScrollIndicator={false}
-      scrollEnabled={false}
-      onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })}
+      showsVerticalScrollIndicator={false}
+      {...rest}
+      ref={listRef}
+      snapToInterval={itemSize}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { [horizontal ? 'x' : 'y']: scrollValue } } }], { useNativeDriver })}
       onMomentumScrollEnd={handleMomentumScrollEnd}
-      scrollEventThrottle={16}
-      keyExtractor={(item, index) => item.key || Math.random().toString(36) + index}
+      keyExtractor={(item, index) => {
+        console.log('PageSlider keyExtractor!!!!', { item: JSON.stringify(item) });
+        return item.key || index;
+      }}
       data={data}
       renderItem={renderItem}
     />
   );
 };
 
-export default PageSliderHorizontal;
+export default PageSlider;

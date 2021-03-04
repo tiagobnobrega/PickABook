@@ -1,23 +1,19 @@
-import React, {useEffect} from 'react';
-import { BoxProps } from '@shopify/restyle';
+import React from 'react';
 import { useQuery } from 'react-query';
 import { Text } from 'react-native';
-import { Theme } from '../theme';
 import SliderSelect, { SliderSelectProps } from '../components/SliderSelect';
 import useConfig from '../hooks/useConfig';
 import useApi, { BooksListName } from '../hooks/useApi';
 
 interface ChooseListProps extends Partial<Omit<SliderSelectProps, 'data'|'isLoading'|'onChange'|'keyExtractor'|'renderItem'>>{
-  onChange?:(item:BooksListName)=>void;
+  onChange?:(item:{ author:string })=>void;
+  listName?: string;
 }
 
-const ChooseList: React.FC<ChooseListProps> = ({ onChange, ...rest }) => {
+const ChooseList: React.FC<ChooseListProps> = ({ onChange, listName, ...rest }) => {
   const config = useConfig();
   const api = useApi(config);
-  const { isLoading, error, data } = useQuery<BooksListName[], Error>('getListNames', api.getListNames);
-  // useEffect(() => {
-  //   console.log('ChooseList::onChange updated!!!!');
-  // },[onChange])
+  const { isLoading, error, data } = useQuery<string[], Error>(`getAuthors-${listName}`, async () => (listName ? api.getAuthors(listName) : []));
 
   if (error) {
     return <Text>Something went terribly wrong... sorry </Text>;
@@ -25,10 +21,11 @@ const ChooseList: React.FC<ChooseListProps> = ({ onChange, ...rest }) => {
   return (
     <SliderSelect
       {...rest}
-      data={data}
+      data={data ? data.map((d) => ({ author: d })) : []}
+      labelAttr="author"
       isLoading={isLoading}
       onChange={onChange}
-      keyExtractor={(item) => Math.random().toString(36) + item.key || item.list_name_encoded}
+      keyExtractor={(item) => Math.random().toString(36) + (item.key || item.label)}
     />
   );
 };
